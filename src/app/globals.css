@@ -14,8 +14,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: oklch(0.98 0.01 182.79);
     --foreground: #ededed;
+  }
+  .custom-navbar {
+    background-color: oklch(0.98 0.01 182.79) !important;
   }
 }
 
