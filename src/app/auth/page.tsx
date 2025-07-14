@@ -12,17 +12,19 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
       if (mode === "register") {
-        await axios.post("http://localhost:5000/api/register", { username, password });
+        await axios.post(`${apiUrl}/api/register`, { username, password });
         setMode("login");
         setError("Registration successful! Please log in.");
       } else {
-        const res = await axios.post("http://localhost:5000/api/login", { username, password });
+        const res = await axios.post(`${apiUrl}/api/login`, { username, password });
         localStorage.setItem("jwt", res.data.token);
         window.location.href = "/dashboard";
       }

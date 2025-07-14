@@ -26,6 +26,8 @@ export default function NotesPage() {
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; id: number | null }>({ open: false, id: null });
   const router = useRouter();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const fetchNotes = async () => {
     setLoading(true);
     try {
@@ -33,7 +35,7 @@ export default function NotesPage() {
       if (search) params.q = search;
       if (tags) params.tags = tags;
       if (showFavorites) params.favorite = true;
-      const res = await axios.get("http://localhost:5000/api/notes", { params });
+      const res = await axios.get(`${apiUrl}/api/notes`, { params });
       setNotes(res.data);
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to fetch notes");
@@ -56,7 +58,7 @@ export default function NotesPage() {
     e.preventDefault();
     setError("");
     try {
-      await axios.post("http://localhost:5000/api/notes", {
+      await axios.post(`${apiUrl}/api/notes`, {
         content: newNote.content,
         tags: newNote.tags.split(",").map((t) => t.trim()).filter(Boolean),
       });
@@ -70,7 +72,7 @@ export default function NotesPage() {
   const handleDelete = async (id: number) => {
     setError("");
     try {
-      await axios.delete(`http://localhost:5000/api/notes/${id}`);
+      await axios.delete(`${apiUrl}/api/notes/${id}`);
       fetchNotes();
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to delete note");
@@ -86,7 +88,7 @@ export default function NotesPage() {
     if (!editNote) return;
     setError("");
     try {
-      await axios.put(`http://localhost:5000/api/notes/${editNote.id}`,
+      await axios.put(`${apiUrl}/api/notes/${editNote.id}`,
         {
           content: editNote.content,
           tags: editNote.tags,
@@ -102,7 +104,7 @@ export default function NotesPage() {
   const handleToggleFavorite = async (id: number) => {
     setError("");
     try {
-      await axios.patch(`http://localhost:5000/api/notes/${id}/favorite`);
+      await axios.patch(`${apiUrl}/api/notes/${id}/favorite`);
       fetchNotes();
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to update favorite");

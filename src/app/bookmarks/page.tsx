@@ -28,13 +28,15 @@ export default function BookmarksPage() {
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; id: number | null }>({ open: false, id: null });
   const router = useRouter();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   const fetchBookmarks = async () => {
     setLoading(true);
     try {
       const params: any = {};
       if (search) params.q = search;
       if (tags) params.tags = tags;
-      const res = await axios.get("http://localhost:5000/api/bookmarks", { params });
+      const res = await axios.get(`${apiUrl}/api/bookmarks`, { params });
       setBookmarks(res.data);
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to fetch bookmarks");
@@ -57,7 +59,7 @@ export default function BookmarksPage() {
     e.preventDefault();
     setError("");
     try {
-      await axios.post("http://localhost:5000/api/bookmarks", {
+      await axios.post(`${apiUrl}/api/bookmarks`, {
         url: newBookmark.url,
         title: newBookmark.title,
         description: newBookmark.description,
@@ -73,7 +75,7 @@ export default function BookmarksPage() {
   const handleDelete = async (id: number) => {
     setError("");
     try {
-      await axios.delete(`http://localhost:5000/api/bookmarks/${id}`);
+      await axios.delete(`${apiUrl}/api/bookmarks/${id}`);
       fetchBookmarks();
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to delete bookmark");
@@ -89,7 +91,7 @@ export default function BookmarksPage() {
     if (!editBookmark) return;
     setError("");
     try {
-      await axios.put(`http://localhost:5000/api/bookmarks/${editBookmark.id}`,
+      await axios.put(`${apiUrl}/api/bookmarks/${editBookmark.id}`,
         {
           url: editBookmark.url,
           title: editBookmark.title,
@@ -107,7 +109,7 @@ export default function BookmarksPage() {
   const handleToggleFavorite = async (id: number) => {
     setError("");
     try {
-      await axios.patch(`http://localhost:5000/api/bookmarks/${id}/favorite`);
+      await axios.patch(`${apiUrl}/api/bookmarks/${id}/favorite`);
       fetchBookmarks();
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to update favorite");
